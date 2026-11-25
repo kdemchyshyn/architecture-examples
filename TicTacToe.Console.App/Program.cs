@@ -8,5 +8,6 @@ output.ListenTo(game);
 cntoutput.ListenTo(game);
 
 //var input = new ConsoleInput();
-var input = new AltConsoleInput();
+//var input = new AltConsoleInput();
+var input = new AutoGame();
 input.StartProcessing(game);
