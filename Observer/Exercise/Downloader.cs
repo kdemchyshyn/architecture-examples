@@ -8,9 +8,70 @@ namespace Observer.Exercise;
 // Implement two variants: OOP Observer with an interface, and C# delegates/events.
 public class Downloader
 {
+    private List<IObserver> progressObs = new List<IObserver>();
+    private List<IObserver> finishObs = new List<IObserver>();
     
+    private int progress = 0;
     public void UpdateProgress(int percentage)
     {
-        // TODO: Update progress and notify subscribers.
+        if (percentage <= progress)
+        {
+            return;
+        }
+        
+        progress = percentage;
+
+        foreach (var obs in progressObs)
+        {
+            obs.OnUpdateProgress(progress);
+        }
+
+        if (progress == 100)
+        {
+            foreach (var obs in finishObs)
+            {
+                obs.OnFinished();
+            }
+        }
+    }
+    
+    public void AddProgressObserver(IObserver observer)
+    {
+        progressObs.Add(observer);
+    }
+    
+    public void AddFinishObserver(IObserver observer)
+    {
+        finishObs.Add(observer);
+    }
+
+    public void RemoveProgressObserver(IObserver observer)
+    {
+        progressObs.Remove(observer);
+    }
+
+    public void RemoveFinishObserver(IObserver observer)
+    {
+        finishObs.Remove(observer);
+    }
+    
+}
+
+public interface IObserver
+{
+    void OnUpdateProgress(int progress);
+    void OnFinished();
+}
+
+public class User : IObserver
+{
+    public void OnUpdateProgress(int progress)
+    {
+        Console.WriteLine($"Current progress: {progress}%");
+    }
+
+    public void OnFinished()
+    {
+        Console.WriteLine($"Download finished!");
     }
 }
